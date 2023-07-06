@@ -97,22 +97,6 @@ public class XPCheque extends SubCommand {
     }
 
     public void decreaseExperience(Player player, int xpToRemove) {
-//        int oldLevel = player.getLevel();
-//        float oldExp = player.getExp();
-//        int newTotalExp = Math.max(player.getTotalExperience() - xpToRemove, 0);
-//
-//        player.setTotalExperience(newTotalExp);
-//
-//        int newLevel = player.getLevel();
-//        float newExp = player.getExp();
-//        float progressDiff = newExp - oldExp;
-//
-//        if (newLevel < oldLevel) {
-//            progressDiff += 1;
-//            player.sendExperienceChange(-progressDiff, newLevel - oldLevel);
-//        } else
-//            player.sendExperienceChange(progressDiff, newLevel - oldLevel);
-
         int totalExp = player.getTotalExperience();
         int newTotalExp = Math.max(totalExp - xpToRemove, 0);
 
