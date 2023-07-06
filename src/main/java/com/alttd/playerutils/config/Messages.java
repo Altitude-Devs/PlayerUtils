@@ -66,6 +66,7 @@ public class Messages extends AbstractConfig {
         private static final String prefix = "pu-command.xp-cheque.";
 
         public static String FAILED_STORAGE = "<red>Unable to create custom item for xp cheque</red>";
+        public static String NEGATIVE = "<red>You cannot enter a negative value for xp.</red>";
         public static String NOT_ENOUGH_XP = "<red>Not enough xp, you have <xp></red>";
         public static String NOT_HOLDING_BOTTLE = "<red>You need to hold an empty glass bottle while executing this command</red>";
         public static String DISPLAY_NAME = "<yellow>Xp bottle containing <xp> xp</yellow>";
@@ -74,6 +75,7 @@ public class Messages extends AbstractConfig {
         @SuppressWarnings("unused")
         private static void load() {
             FAILED_STORAGE = config.getString(prefix, "failed-storage", FAILED_STORAGE);
+            NEGATIVE = config.getString(prefix, "negative", NEGATIVE);
             NOT_ENOUGH_XP = config.getString(prefix, "not-enough-xp", NOT_ENOUGH_XP);
             NOT_HOLDING_BOTTLE = config.getString(prefix, "not-holding-bottle", NOT_HOLDING_BOTTLE);
             DISPLAY_NAME = config.getString(prefix, "display-name", DISPLAY_NAME);

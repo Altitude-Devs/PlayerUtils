@@ -44,6 +44,11 @@ public class XPCheque extends SubCommand {
             return false;
         }
 
+        if ((xpValue <= 0)) {
+            commandSender.sendMiniMessage(Messages.XP_CHEQUE.NEGATIVE, null);
+            return true;
+        }
+
         int totalExperience = player.getTotalExperience();
         if (totalExperience < xpValue) {
             commandSender.sendMiniMessage(Messages.XP_CHEQUE.NOT_ENOUGH_XP, Placeholder.parsed("xp", String.valueOf(totalExperience)));
