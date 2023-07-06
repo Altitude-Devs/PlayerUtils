@@ -29,7 +29,7 @@ public class PlayerUtilsCommand implements CommandExecutor, TabExecutor {
         command.setAliases(List.of("pu"));
 
         subCommands = Arrays.asList(
-                new Glow(),
+                new Glow(logger),
                 new XPCheque(playerUtils)
         );
     }

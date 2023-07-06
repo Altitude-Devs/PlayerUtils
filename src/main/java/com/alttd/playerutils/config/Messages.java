@@ -54,11 +54,13 @@ public class Messages extends AbstractConfig {
 
         public static String GLOW_OFF = "<green>Glow turned off</green>";
         public static String GLOW_ON = "<green>Glow turned on, you are now glowing <color></green>";
+        public static String UNABLE_TO_GET_SCOREBOARD = "<red>Unable to get scoreboard for team</red>";
 
         @SuppressWarnings("unused")
         private static void load() {
             GLOW_OFF = config.getString(prefix, "glow-off",GLOW_OFF);
             GLOW_ON = config.getString(prefix, "glow-on",GLOW_ON);
+            UNABLE_TO_GET_SCOREBOARD = config.getString(prefix, "unable-to-get-scoreboard",UNABLE_TO_GET_SCOREBOARD);
         }
     }
 
