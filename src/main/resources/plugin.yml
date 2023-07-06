@@ -1,0 +1,11 @@
+name: PlayerUtils
+version: '${version}'
+main: com.alttd.playerutils.PlayerUtils
+api-version: '1.20'
+commands:
+  playerutils:
+    description: Base command for player utils
+    permission: playerutils.use
+    usage: /playerutils
+    aliases:
+      - pu
