@@ -1,6 +1,8 @@
 package com.alttd.playerutils;
 
 import com.alttd.playerutils.commands.PlayerUtilsCommand;
+import com.alttd.playerutils.config.Config;
+import com.alttd.playerutils.config.Messages;
 import com.alttd.playerutils.event_listeners.XpBottleEvent;
 import com.alttd.playerutils.util.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,5 +28,10 @@ public final class PlayerUtils extends JavaPlugin {
 
     private void registerEvents() {
         getServer().getPluginManager().registerEvents(new XpBottleEvent(this, logger), this);
+    }
+
+    public void reloadConfigs() {
+        Config.reload(logger);
+        Messages.reload(logger);
     }
 }

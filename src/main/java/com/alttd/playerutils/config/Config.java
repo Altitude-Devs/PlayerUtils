@@ -1,21 +1,27 @@
 package com.alttd.playerutils.config;
 
-import com.alttd.playerutils.PlayerUtils;
 import com.alttd.playerutils.util.Logger;
+
+import java.io.File;
 
 public class Config extends AbstractConfig{
 
     static Config config;
     private Logger logger;
 
-    Config(PlayerUtils playerUtils, Logger logger) {
-        super(playerUtils, "config.yml", logger);
+    Config(Logger logger) {
+        super(
+                new File(System.getProperty("user.home") + File.separator
+                        + "share" + File.separator
+                        + "configs" + File.separator
+                        + "PlayerUtils"),
+                "config.yml", logger);
         this.logger = logger;
     }
 
-    public static void reload(PlayerUtils playerUtils, Logger logger) {
+    public static void reload(Logger logger) {
         logger.info("Reloading config");
-        config = new Config(playerUtils, logger);
+        config = new Config(logger);
         config.readConfig(Config.class, null);
     }
 

@@ -1,21 +1,26 @@
 package com.alttd.playerutils.config;
 
-import com.alttd.playerutils.PlayerUtils;
 import com.alttd.playerutils.util.Logger;
 
+import java.io.File;
 import java.util.List;
 
 public class Messages extends AbstractConfig {
     static Messages config;
     private final Logger logger;
 
-    Messages(PlayerUtils playerUtils, Logger logger) {
-        super(playerUtils, "messages.yml", logger);
+    Messages(Logger logger) {
+        super(
+                new File(System.getProperty("user.home") + File.separator
+                        + "share" + File.separator
+                        + "configs" + File.separator
+                        + "PlayerUtils"),
+                "messages.yml", logger);
         this.logger = logger;
     }
 
-    public static void reload(PlayerUtils playerUtils, Logger logger) {
-        config = new Messages(playerUtils, logger);
+    public static void reload(Logger logger) {
+        config = new Messages(logger);
         config.readConfig(Messages.class, null);
     }
 
@@ -27,6 +32,7 @@ public class Messages extends AbstractConfig {
         public static String GLOW = "<green>Glow in a specified color: <gold>/pu glow <color></gold></green>";
         public static String XP_CHEQUE = "<green>Create an xp cheque: <gold>/pu xpcheque <amount></gold></green>";
         public static String XP_CALC = "<green>Calculate the amount of xp between levels: <gold>/pu xpcalc <from> <to></gold></green>";
+        public static String RELOAD = "<green>Reload the configs for PlayerUtils: <gold>/pu reload</gold></green>";
 
         @SuppressWarnings("unused")
         private static void load() {
@@ -35,6 +41,7 @@ public class Messages extends AbstractConfig {
             GLOW = config.getString(prefix, "glow", GLOW);
             XP_CHEQUE = config.getString(prefix, "xp-cheque", XP_CHEQUE);
             XP_CALC = config.getString(prefix, "xp-calc", XP_CALC);
+            RELOAD = config.getString(prefix, "reload", RELOAD);
         }
     }
 
@@ -95,6 +102,17 @@ public class Messages extends AbstractConfig {
         @SuppressWarnings("unused")
         private static void load() {
             XP_NEEDED = config.getString(prefix, "xp-needed", XP_NEEDED);
+        }
+    }
+
+    public static class RELOAD {
+        private static final String prefix = "pu-command.reload.";
+
+        public static String RELOADED = "<green>Reloaded configs</green>";
+
+        @SuppressWarnings("unused")
+        private static void load() {
+            RELOADED = config.getString(prefix, "reloaded", RELOADED);
         }
     }
 }

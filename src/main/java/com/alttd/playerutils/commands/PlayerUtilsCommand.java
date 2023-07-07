@@ -2,6 +2,7 @@ package com.alttd.playerutils.commands;
 
 import com.alttd.playerutils.PlayerUtils;
 import com.alttd.playerutils.commands.playerutils_subcommands.Glow;
+import com.alttd.playerutils.commands.playerutils_subcommands.Reload;
 import com.alttd.playerutils.commands.playerutils_subcommands.XPCalc;
 import com.alttd.playerutils.commands.playerutils_subcommands.XPCheque;
 import com.alttd.playerutils.config.Messages;
@@ -32,7 +33,8 @@ public class PlayerUtilsCommand implements CommandExecutor, TabExecutor {
         subCommands = Arrays.asList(
                 new Glow(logger),
                 new XPCheque(playerUtils),
-                new XPCalc()
+                new XPCalc(),
+                new Reload(playerUtils)
         );
     }
 
