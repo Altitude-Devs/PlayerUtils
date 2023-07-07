@@ -10,7 +10,7 @@ public class Messages extends AbstractConfig {
     private final Logger logger;
 
     Messages(PlayerUtils playerUtils, Logger logger) {
-        super(playerUtils, "config.yml", logger);
+        super(playerUtils, "messages.yml", logger);
         this.logger = logger;
     }
 
@@ -26,6 +26,7 @@ public class Messages extends AbstractConfig {
         public static String HELP_MESSAGE = "<green>Show this menu: <gold>/pu help</gold></green>";
         public static String GLOW = "<green>Glow in a specified color: <gold>/pu glow <color></gold></green>";
         public static String XP_CHEQUE = "<green>Create an xp cheque: <gold>/pu xpcheque <amount></gold></green>";
+        public static String XP_CALC = "<green>Calculate the amount of xp between levels: <gold>/pu xpcalc <from> <to></gold></green>";
 
         @SuppressWarnings("unused")
         private static void load() {
@@ -33,6 +34,7 @@ public class Messages extends AbstractConfig {
             HELP_MESSAGE = config.getString(prefix, "help", HELP_MESSAGE);
             GLOW = config.getString(prefix, "glow", GLOW);
             XP_CHEQUE = config.getString(prefix, "xp-cheque", XP_CHEQUE);
+            XP_CALC = config.getString(prefix, "xp-calc", XP_CALC);
         }
     }
 
@@ -82,6 +84,17 @@ public class Messages extends AbstractConfig {
             NOT_HOLDING_BOTTLE = config.getString(prefix, "not-holding-bottle", NOT_HOLDING_BOTTLE);
             DISPLAY_NAME = config.getString(prefix, "display-name", DISPLAY_NAME);
             LORE = config.getStringList(prefix, "lore", LORE);
+        }
+    }
+
+    public static class XP_CALC {
+        private static final String prefix = "pu-command.xp-cheque.";
+
+        public static String XP_NEEDED = "<green>Xp needed <gold><xp_needed></gold>.</green>";
+
+        @SuppressWarnings("unused")
+        private static void load() {
+            XP_NEEDED = config.getString(prefix, "xp-needed", XP_NEEDED);
         }
     }
 }
