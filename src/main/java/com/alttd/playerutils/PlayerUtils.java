@@ -19,6 +19,7 @@ public final class PlayerUtils extends JavaPlugin {
         this.logger = new Logger(getLogger());
         registerCommands();
         registerEvents();
+        reloadConfigs();
     }
 
     @Override
