@@ -5,6 +5,7 @@ import com.alttd.playerutils.commands.SubCommand;
 import com.alttd.playerutils.config.Messages;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
@@ -82,6 +83,18 @@ public class XPCheque extends SubCommand {
         return true;
     }
 
+    public String addDots(String input) {
+        StringBuilder stringBuilder = new StringBuilder(input);
+        int length = input.length();
+
+        // Start from the third character from the right and add a dot after every third character
+        for (int i = length - 3; i > 0; i -= 3) {
+            stringBuilder.insert(i, '.');
+        }
+
+        return stringBuilder.toString();
+    }
+
     private Optional<ItemStack> getExpBottleItem(Player player, int xpValue) {
         ItemStack expBottle = new ItemStack(Material.EXPERIENCE_BOTTLE);
         ItemMeta itemMeta = expBottle.getItemMeta();
@@ -93,9 +106,13 @@ public class XPCheque extends SubCommand {
             return Optional.empty();
         }
         persistentDataContainer.set(customXp, PersistentDataType.INTEGER, xpValue);
-        itemMeta.displayName(miniMessage.deserialize(Messages.XP_CHEQUE.DISPLAY_NAME, Placeholder.parsed("xp", String.valueOf(xpValue))));
+        String xpWithDots = addDots(String.valueOf(xpValue));
+        itemMeta.displayName(miniMessage.deserialize(Messages.XP_CHEQUE.DISPLAY_NAME, Placeholder.parsed("xp", xpWithDots)));
         itemMeta.lore(Messages.XP_CHEQUE.LORE.stream()
-                .map(str -> miniMessage.deserialize(str, Placeholder.component("name", player.displayName())))
+                .map(str -> miniMessage.deserialize(str, TagResolver.resolver(
+                        Placeholder.component("name", player.displayName()),
+                        Placeholder.parsed("xp", xpWithDots)
+                )))
                 .collect(Collectors.toList()));
         expBottle.setItemMeta(itemMeta);
         return Optional.of(expBottle);
