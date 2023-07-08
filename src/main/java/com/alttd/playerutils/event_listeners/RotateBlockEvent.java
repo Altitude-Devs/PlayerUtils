@@ -120,7 +120,7 @@ public class RotateBlockEvent implements Listener {
 
         Set<BlockFace> faces = fence.getFaces();
         fence.setFace(blockFace, !faces.contains(blockFace));
-        block.setBlockData(fence);
+        block.setBlockAndForget(fence);
     }
 
     private void toggleWall(Block block, BlockFace blockFace, Player player, boolean leftClick) {
@@ -136,7 +136,7 @@ public class RotateBlockEvent implements Listener {
         if (player.isSneaking()) {
             VALID_FOUR_STATES.forEach(face -> wall.setHeight(face, Wall.Height.NONE));
             wall.setUp(true);
-            block.setBlockData(wall);
+            block.setBlockAndForget(wall);
             return;
         }
 
@@ -144,7 +144,7 @@ public class RotateBlockEvent implements Listener {
             if (wallHasNoFaces(wall))
                 return;
             wall.setUp(!wall.isUp());
-            block.setBlockData(wall);
+            block.setBlockAndForget(wall);
             return;
         }
 
@@ -160,7 +160,7 @@ public class RotateBlockEvent implements Listener {
         if (!wall.isUp() && wallHasNoFaces(wall)) {
             wall.setUp(true);
         }
-        block.setBlockData(wall);
+        block.setBlockAndForget(wall);
     }
 
     private boolean wallHasNoFaces(Wall wall) {
@@ -186,7 +186,7 @@ public class RotateBlockEvent implements Listener {
             nextRotation = getPreviousRotation(stairs);
         else
             nextRotation = getNextRotation(stairs);
-        block.setBlockData(nextRotation);
+        block.setBlockAndForget(nextRotation);
     }
 
     private Stairs getNextRotation(Stairs stairs) {
