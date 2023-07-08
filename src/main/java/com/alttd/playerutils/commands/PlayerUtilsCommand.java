@@ -1,11 +1,9 @@
 package com.alttd.playerutils.commands;
 
 import com.alttd.playerutils.PlayerUtils;
-import com.alttd.playerutils.commands.playerutils_subcommands.Glow;
-import com.alttd.playerutils.commands.playerutils_subcommands.Reload;
-import com.alttd.playerutils.commands.playerutils_subcommands.XPCalc;
-import com.alttd.playerutils.commands.playerutils_subcommands.XPCheque;
+import com.alttd.playerutils.commands.playerutils_subcommands.*;
 import com.alttd.playerutils.config.Messages;
+import com.alttd.playerutils.event_listeners.RotateBlockEvent;
 import com.alttd.playerutils.util.Logger;
 import org.bukkit.command.*;
 import org.jetbrains.annotations.NotNull;
@@ -30,11 +28,11 @@ public class PlayerUtilsCommand implements CommandExecutor, TabExecutor {
         command.setTabCompleter(this);
         command.setAliases(List.of("pu"));
 
-        subCommands = Arrays.asList(
+        subCommands = new ArrayList<>(List.of(
                 new Glow(logger),
                 new XPCheque(playerUtils),
                 new XPCalc(),
-                new Reload(playerUtils)
+                new Reload(playerUtils))
         );
     }
 
@@ -94,5 +92,12 @@ public class PlayerUtilsCommand implements CommandExecutor, TabExecutor {
                 .filter(subCommand -> subCommand.getName().equals(cmdName))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public void addSubCommand(SubCommand subCommand) {
+        if (subCommands.stream().anyMatch(entry -> entry.getName().equalsIgnoreCase(subCommand.getName()))) {
+            return;
+        }
+        subCommands.add(subCommand);
     }
 }

@@ -33,6 +33,7 @@ public class Messages extends AbstractConfig {
         public static String XP_CHEQUE = "<green>Create an xp cheque: <gold>/pu xpcheque <amount></gold></green>";
         public static String XP_CALC = "<green>Calculate the amount of xp between levels: <gold>/pu xpcalc <from> <to></gold></green>";
         public static String RELOAD = "<green>Reload the configs for PlayerUtils: <gold>/pu reload</gold></green>";
+        public static String ROTATE_BLOCK = "<green>Enable rotating blocks with a blaze rod: <gold>/pu rotateblock</gold></green>";
 
         @SuppressWarnings("unused")
         private static void load() {
@@ -42,6 +43,7 @@ public class Messages extends AbstractConfig {
             XP_CHEQUE = config.getString(prefix, "xp-cheque", XP_CHEQUE);
             XP_CALC = config.getString(prefix, "xp-calc", XP_CALC);
             RELOAD = config.getString(prefix, "reload", RELOAD);
+            ROTATE_BLOCK = config.getString(prefix, "rotate-block", ROTATE_BLOCK);
         }
     }
 
@@ -113,6 +115,19 @@ public class Messages extends AbstractConfig {
         @SuppressWarnings("unused")
         private static void load() {
             RELOADED = config.getString(prefix, "reloaded", RELOADED);
+        }
+    }
+
+    public static class ROTATE_BLOCK {
+        private static final String prefix = "pu-command.rotate-block.";
+
+        public static String ENABLED = "<green>You enabled rotating blocks by left clicking them with a <gold>wooden hoe</gold></green>";
+        public static String DISABLED = "<green>You <red>disabled</red> rotating blocks</green>";
+
+        @SuppressWarnings("unused")
+        private static void load() {
+            ENABLED = config.getString(prefix, "enabled", ENABLED);
+            DISABLED = config.getString(prefix, "disabled", DISABLED);
         }
     }
 }
