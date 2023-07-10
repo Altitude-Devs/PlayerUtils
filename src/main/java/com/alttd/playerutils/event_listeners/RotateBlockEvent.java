@@ -1,5 +1,6 @@
 package com.alttd.playerutils.event_listeners;
 
+import org.bukkit.Axis;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -8,6 +9,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Orientable;
 import org.bukkit.block.data.type.Fence;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.block.data.type.Wall;
@@ -69,11 +71,30 @@ public class RotateBlockEvent implements Listener {
             toggleFence(block, event.getBlockFace(), player);
         } else if (block.getBlockData() instanceof Directional directional) {
             event.setCancelled(true);
-            rotateNormalBlock(block, directional, player);
+            rotateDirectionalBlock(block, directional, player);
+        } else if (block.getBlockData() instanceof Orientable orientable) {
+            event.setCancelled(true);
+            rotateOrientableBlock(block, orientable, player);
         }
     }
 
-    private void rotateNormalBlock(Block block, Directional directional, Player player) {
+    private void rotateOrientableBlock(Block block, Orientable orientable, Player player) {
+        if (cannotBuild(block, player)) {
+            return;
+        }
+
+        Axis axis = orientable.getAxis();
+        LinkedList<Axis> collect = orientable.getAxes().stream()
+                .sorted()
+                .collect(Collectors.toCollection(LinkedList::new));
+
+        int index = getNextRotation(player, collect.indexOf(axis), collect.size());
+
+        orientable.setAxis(collect.get(index));
+        block.setBlockData(orientable);
+    }
+
+    private void rotateDirectionalBlock(Block block, Directional directional, Player player) {
         if (cannotBuild(block, player)) {
             return;
         }
@@ -83,19 +104,24 @@ public class RotateBlockEvent implements Listener {
                 .sorted()
                 .collect(Collectors.toCollection(LinkedList::new));
 
-        int index = collect.indexOf(facing);
-        if (player.isSneaking()) {
-            index--;
-            if (index < 0)
-                index = collect.size() - 1;
-        } else {
-            index++;
-            if (index >= collect.size())
-                index = 0;
-        }
+        int index = getNextRotation(player, collect.indexOf(facing), collect.size());
 
         directional.setFacing(collect.get(index));
         block.setBlockData(directional);
+    }
+
+    private int getNextRotation(Player player, int i, int size) {
+        int index = i;
+        if (player.isSneaking()) {
+            index--;
+            if (index < 0)
+                index = size - 1;
+        } else {
+            index++;
+            if (index >= size)
+                index = 0;
+        }
+        return index;
     }
 
     private void toggleFence(Block block, BlockFace blockFace, Player player) {
@@ -110,7 +136,7 @@ public class RotateBlockEvent implements Listener {
 
         if (player.isSneaking()) {
             fence.getFaces().forEach(face -> fence.setFace(face, false));
-            block.setBlockData(fence);
+            block.setBlockAndForget(fence);
             return;
         }
 
