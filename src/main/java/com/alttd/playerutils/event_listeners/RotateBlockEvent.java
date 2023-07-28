@@ -68,6 +68,7 @@ public class RotateBlockEvent implements Listener {
             event.setCancelled(true);
             toggleFence(block, event.getBlockFace(), player);
         } else if(Tag.RAILS.isTagged(type)) {
+            event.setCancelled(true);
             toggleRails(block, player);
         } else if (block.getBlockData() instanceof Directional directional) {
             event.setCancelled(true);
@@ -88,7 +89,7 @@ public class RotateBlockEvent implements Listener {
         }
 
         rail.setShape(getNextRailShape(rail, player.isSneaking()));
-        block.setBlockData(rail);
+        block.setBlockAndForget(rail);
     }
 
     private Rail.Shape getNextRailShape(Rail rail, boolean reverse) {
@@ -127,7 +128,7 @@ public class RotateBlockEvent implements Listener {
         int index = getNextRotation(player, collect.indexOf(axis), collect.size());
 
         orientable.setAxis(collect.get(index));
-        block.setBlockData(orientable);
+        block.setBlockAndForget(orientable);
     }
 
     private void rotateDirectionalBlock(Block block, Directional directional, Player player) {
@@ -143,7 +144,7 @@ public class RotateBlockEvent implements Listener {
         int index = getNextRotation(player, collect.indexOf(facing), collect.size());
 
         directional.setFacing(collect.get(index));
-        block.setBlockData(directional);
+        block.setBlockAndForget(directional);
     }
 
     private int getNextRotation(Player player, int i, int size) {
