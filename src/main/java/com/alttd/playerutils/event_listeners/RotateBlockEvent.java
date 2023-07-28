@@ -6,10 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Bisected;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Directional;
-import org.bukkit.block.data.Orientable;
+import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.Fence;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.block.data.type.Wall;
@@ -24,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RotateBlockEvent implements Listener {
 
@@ -69,12 +67,50 @@ public class RotateBlockEvent implements Listener {
         } else if (Tag.FENCES.isTagged(type)) {
             event.setCancelled(true);
             toggleFence(block, event.getBlockFace(), player);
+        } else if(Tag.RAILS.isTagged(type)) {
+            toggleRails(block, player);
         } else if (block.getBlockData() instanceof Directional directional) {
             event.setCancelled(true);
             rotateDirectionalBlock(block, directional, player);
         } else if (block.getBlockData() instanceof Orientable orientable) {
             event.setCancelled(true);
             rotateOrientableBlock(block, orientable, player);
+        }
+    }
+
+    private void toggleRails(Block block, Player player) {
+        if (!(block instanceof Rail rail)) {
+            return;
+        }
+
+        if (cannotBuild(block, player)) {
+            return;
+        }
+
+        rail.setShape(getNextRailShape(rail, player.isSneaking()));
+        block.setBlockData(rail);
+    }
+
+    private Rail.Shape getNextRailShape(Rail rail, boolean reverse) {
+        Rail.Shape shape = rail.getShape();
+        List<Rail.Shape> collect = rail.getShapes().stream().sorted().toList();
+        Iterator<Rail.Shape> iterator = collect.iterator();
+
+        if (reverse) {
+            Rail.Shape last = iterator.next();
+            if (last.equals(shape))
+                return collect.get(collect.size() - 1);
+            while (iterator.hasNext()) {
+                Rail.Shape next = iterator.next();
+                if (next.equals(shape))
+                    return last;
+                last = next;
+            }
+            return collect.get(0);
+        } else {
+            while (iterator.hasNext() && !iterator.next().equals(shape))
+                ;
+            return iterator.hasNext() ? iterator.next() : collect.get(0);
         }
     }
 
