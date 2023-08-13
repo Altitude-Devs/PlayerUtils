@@ -6,6 +6,7 @@ import com.alttd.playerutils.util.Logger;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.command.CommandSender;
@@ -28,13 +29,21 @@ public class Glow extends SubCommand {
 
     @Override
     public boolean onCommand(CommandSender commandSender, String[] args) {
-        if (!(commandSender instanceof Player player)) {
-            commandSender.sendMiniMessage(Messages.GENERIC.PLAYER_ONLY, null);
+        if (args.length != 2 && args.length != 3) {
+            return false;
+        }
+
+        boolean otherPlayer = args.length == 3;
+        Optional<Player> playerFromArg = getTargetPlayer(commandSender, args);
+        if (playerFromArg.isEmpty()) {
             return true;
         }
 
-        if (args.length != 2) {
-            return false;
+        Player player = playerFromArg.get();
+
+        if (args[1].equalsIgnoreCase("off")) {
+            turnOffGlow(commandSender, player, otherPlayer);
+            return true;
         }
 
         Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
@@ -42,12 +51,6 @@ public class Glow extends SubCommand {
                 .filter(team -> team.getName().startsWith("Glow"))
                 .filter(team -> team.hasPlayer(player))
                 .forEach(team -> team.removePlayer(player));
-
-        if (args[1].equalsIgnoreCase("off")) {
-            commandSender.sendMiniMessage(Messages.GLOW.GLOW_OFF, null);
-            player.setGlowing(false);
-            return true;
-        }
 
         Optional<DyeColor> any = Arrays.stream(DyeColor.values()).filter(chatColor -> chatColor.name().equalsIgnoreCase(args[1])).findAny();
         if (any.isEmpty()) {
@@ -65,22 +68,59 @@ public class Glow extends SubCommand {
             team.color(namedTextColor);
         }
 
+        turnOnGlow(commandSender, player, team, dyeColor, otherPlayer);
+        return true;
+    }
+
+    private Optional<Player> getTargetPlayer(CommandSender commandSender, String[] args) {
+        if (args.length == 2) {
+            if (!(commandSender instanceof Player commandPlayer)) {
+                commandSender.sendMiniMessage(Messages.GENERIC.PLAYER_ONLY, null);
+                return Optional.empty();
+            }
+            return Optional.of(commandPlayer);
+        }
+
+        if (!commandSender.hasPermission(getPermission() + ".other")) {
+            commandSender.sendMiniMessage(Messages.GENERIC.NO_PERMISSION, Placeholder.parsed("permission", getPermission() + ".other"));
+            return Optional.empty();
+        }
+        Optional<? extends Player> any = Bukkit.getOnlinePlayers().stream().filter(offlinePlayer -> offlinePlayer.getName().equalsIgnoreCase(args[2])).findAny();
+        if (any.isPresent()) {
+            return Optional.of(any.get());
+        } else {
+            commandSender.sendMiniMessage(Messages.GENERIC.PLAYER_NOT_FOUND, Placeholder.parsed("player", args[2]));
+            return Optional.empty();
+        }
+    }
+
+    private void turnOffGlow(CommandSender commandSender, Player player, boolean otherPlayer) {
+        player.sendMiniMessage(Messages.GLOW.GLOW_OFF, null);
+        player.setGlowing(false);
+        if (otherPlayer) {
+            commandSender.sendMiniMessage(Messages.GLOW.GLOW_OFF_FOR_PLAYER, Placeholder.component("player", player.name()));
+        }
+    }
+
+    private void turnOnGlow(CommandSender commandSender, Player player, Team team, DyeColor dyeColor, boolean otherPlayer) {
         if (team.getScoreboard() == null) {
             commandSender.sendMiniMessage(Messages.GLOW.UNABLE_TO_GET_SCOREBOARD, null);
             logger.warning("Unable to get scoreboard for team");
-            return true;
+            return;
         }
 
-//        if (!team.hasEntry(player.getName())) {
-//            team.addEntry(player.getName());
-//        }
         if (!team.hasPlayer(player))
             team.addPlayer(player);
         player.setScoreboard(team.getScoreboard());
 
         player.setGlowing(true);
-        commandSender.sendMiniMessage(Messages.GLOW.GLOW_ON, Placeholder.parsed("color", dyeColor.name()));
-        return true;
+        player.sendMiniMessage(Messages.GLOW.GLOW_ON, Placeholder.parsed("color", dyeColor.name()));
+        if (otherPlayer) {
+            commandSender.sendMiniMessage(Messages.GLOW.GLOW_ON_FOR_PLAYER, TagResolver.resolver(
+                    Placeholder.parsed("color", dyeColor.name()),
+                    Placeholder.component("player", player.name())
+            ));
+        }
     }
 
     @Override
@@ -92,6 +132,9 @@ public class Glow extends SubCommand {
     public List<String> getTabComplete(CommandSender commandSender, String[] args) {
         if (args.length == 2) {
             return Arrays.stream(DyeColor.values()).map(Enum::name).collect(Collectors.toList());
+        }
+        if (args.length == 3) {
+            return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
         }
         return List.of();
     }

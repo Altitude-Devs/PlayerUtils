@@ -5,6 +5,7 @@ import com.alttd.playerutils.commands.playerutils_subcommands.*;
 import com.alttd.playerutils.config.Messages;
 import com.alttd.playerutils.event_listeners.RotateBlockEvent;
 import com.alttd.playerutils.util.Logger;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +52,7 @@ public class PlayerUtilsCommand implements CommandExecutor, TabExecutor {
             return false;
 
         if (!commandSender.hasPermission(subCommand.getPermission())) {
-            commandSender.sendMiniMessage(Messages.GENERIC.NO_PERMISSION, null);
+            commandSender.sendMiniMessage(Messages.GENERIC.NO_PERMISSION, Placeholder.parsed("permission", subCommand.getPermission()));
             return true;
         }
 

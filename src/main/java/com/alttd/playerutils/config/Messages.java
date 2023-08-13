@@ -50,13 +50,15 @@ public class Messages extends AbstractConfig {
     public static class GENERIC {
         private static final String prefix = "generic.";
 
-        public static String NO_PERMISSION = "<red>You don't have permission for this command</red>";
+        public static String NO_PERMISSION = "<red><hover:show_text:'<red><permission></red>'>You don't have permission for this command</hover></red>";
         public static String PLAYER_ONLY = "<red>This command can only be executed as a player</red>";
+        public static String PLAYER_NOT_FOUND = "<red>Unable to find online player <player></red>";
 
         @SuppressWarnings("unused")
         private static void load() {
             NO_PERMISSION = config.getString(prefix, "no-permission", NO_PERMISSION);
             PLAYER_ONLY = config.getString(prefix, "player-only", PLAYER_ONLY);
+            PLAYER_NOT_FOUND = config.getString(prefix, "player-only", PLAYER_NOT_FOUND);
         }
     }
 
@@ -66,6 +68,8 @@ public class Messages extends AbstractConfig {
         public static String GLOW_OFF = "<green>Glow turned off</green>";
         public static String GLOW_ON = "<green>Glow turned on, you are now glowing <color></green>";
         public static String UNABLE_TO_GET_SCOREBOARD = "<red>Unable to get scoreboard for team</red>";
+        public static String GLOW_OFF_FOR_PLAYER = "<green>Glow turned off for <player></green>";
+        public static String GLOW_ON_FOR_PLAYER = "<green>Glow turned on for <player> they are now glowing <color></green>";
 
         @SuppressWarnings("unused")
         private static void load() {
