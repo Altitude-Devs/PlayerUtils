@@ -73,7 +73,7 @@ public class RotateBlockEvent implements Listener {
         } else if (block.getBlockData() instanceof Directional directional) {
             event.setCancelled(true);
             rotateDirectionalBlock(block, directional, player);
-        } else if (block.getBlockData() instanceof Orientable orientable) {
+        } else if (block.getBlockData() instanceof Orientable orientable && !block.getType().equals(Material.NETHER_PORTAL)) {
             event.setCancelled(true);
             rotateOrientableBlock(block, orientable, player);
         }
