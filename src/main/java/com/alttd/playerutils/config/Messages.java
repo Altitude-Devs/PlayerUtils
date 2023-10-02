@@ -30,7 +30,7 @@ public class Messages extends AbstractConfig {
         public static String HELP_MESSAGE_WRAPPER = "<gold>PlayerUtils help:\n<commands></gold>";
         public static String HELP_MESSAGE = "<green>Show this menu: <gold>/pu help</gold></green>";
         public static String GLOW = "<green>Glow in a specified color: <gold>/pu glow <color></gold></green>";
-        public static String XP_CHEQUE = "<green>Create an XP cheque: <gold>/pu xpcheque <amount></gold></green>";
+        public static String XP_CHEQUE = "<green>Create an XP cheque: <gold>/pu xpcheque <xp_value> [amount]</gold></green>";
         public static String XP_CALC = "<green>Calculate the amount of XP between levels: <gold>/pu xpcalc <from> <to></gold></green>";
         public static String RELOAD = "<green>Reload the configs for PlayerUtils: <gold>/pu reload</gold></green>";
         public static String ROTATE_BLOCK = "<green>Enable rotating blocks with a blaze rod: <gold>/pu rotateblock</gold></green>";
@@ -88,6 +88,8 @@ public class Messages extends AbstractConfig {
         public static String NOT_HOLDING_BOTTLE = "<red>You need to hold an empty glass bottle while executing this command</red>";
         public static String DISPLAY_NAME = "<yellow>XP bottle containing <xp> XP</yellow>";
         public static List<String> LORE = List.of("Issued by <name>", "Throw to retrieve <xp> XP");
+        public static String NOT_ENOUGH_BOTTLE = "<red>You need to be holding <amount> glass bottles</red>";
+        public static String INVALID_AMOUNT = "<red>You can only create between 1 and 64 xp cheque's at a time</red>";
 
         @SuppressWarnings("unused")
         private static void load() {
@@ -97,6 +99,8 @@ public class Messages extends AbstractConfig {
             NOT_HOLDING_BOTTLE = config.getString(prefix, "not-holding-bottle", NOT_HOLDING_BOTTLE);
             DISPLAY_NAME = config.getString(prefix, "display-name", DISPLAY_NAME);
             LORE = config.getStringList(prefix, "lore", LORE);
+            NOT_ENOUGH_BOTTLE = config.getString(prefix, "not-enough-bottle", NOT_ENOUGH_BOTTLE);
+            INVALID_AMOUNT = config.getString(prefix, "invalid-amount", INVALID_AMOUNT);
         }
     }
 

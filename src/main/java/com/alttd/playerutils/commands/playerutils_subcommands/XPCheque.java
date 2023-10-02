@@ -35,8 +35,22 @@ public class XPCheque extends SubCommand {
             return true;
         }
 
-        if (args.length != 2)
+        if (args.length != 2 && args.length != 3)
             return false;
+
+        int amount = 1;
+        if (args.length == 3) {
+            try {
+                amount = Integer.parseInt(args[2]);
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+
+        if (amount > 64 || amount < 1) {
+            commandSender.sendMiniMessage(Messages.XP_CHEQUE.INVALID_AMOUNT, null);
+            return true;
+        }
 
         int xpValue;
         try {
@@ -51,7 +65,7 @@ public class XPCheque extends SubCommand {
         }
 
         int totalExperience = player.getTotalExperience();
-        if (totalExperience < xpValue) {
+        if (totalExperience < (xpValue * amount)) {
             commandSender.sendMiniMessage(Messages.XP_CHEQUE.NOT_ENOUGH_XP, Placeholder.parsed("xp", String.valueOf(totalExperience)));
             return true;
         }
@@ -62,21 +76,27 @@ public class XPCheque extends SubCommand {
             return true;
         }
 
+        if (heldItem.getAmount() < amount) {
+            commandSender.sendMiniMessage(Messages.XP_CHEQUE.NOT_ENOUGH_BOTTLE, Placeholder.parsed("amount", String.valueOf(amount)));
+            return true;
+        }
+
         Optional<ItemStack> optionalItemStack = getExpBottleItem(player, xpValue);
         if (optionalItemStack.isEmpty())
             return true;
 
         ItemStack xpBottle = optionalItemStack.get();
+        xpBottle.setAmount(amount);
 
-        decreaseExperience(player, xpValue);
+        decreaseExperience(player, xpValue * amount);
 
-        if (heldItem.getAmount() == 1) {
+        if (heldItem.getAmount() == amount) {
             player.getInventory().setItemInMainHand(xpBottle);
             player.updateInventory();
             return true;
         }
 
-        heldItem.setAmount(heldItem.getAmount() - 1);
+        heldItem.setAmount(heldItem.getAmount() - amount);
         player.getInventory().addItem(xpBottle).values()
                 .forEach(item -> player.getWorld().dropItemNaturally(player.getLocation(), item));
         player.updateInventory();
