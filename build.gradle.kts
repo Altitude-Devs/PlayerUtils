@@ -1,13 +1,10 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
-
 plugins {
     id("java")
-    id("com.github.johnrengelman.shadow") version "7.1.0"
     id("maven-publish")
 }
 
 group = "com.alttd"
-version = "1.0-SNAPSHOT"
+version = System.getenv("BUILD_NUMBER") ?: "1.0-SNAPSHOT"
 description = "Altitude's Transfer Items plugin"
 
 apply<JavaLibraryPlugin>()
@@ -27,20 +24,16 @@ tasks {
         options.encoding = Charsets.UTF_8.name()
     }
 
-    shadowJar {
-        dependsOn(getByName("relocateJars") as ConfigureShadowRelocation)
-        archiveFileName.set("${project.name}-${project.version}.jar")
-        minimize()
-        configurations = listOf(project.configurations.shadow.get())
+    jar {
+        archiveFileName.set("${rootProject.name}.jar")
     }
 
-    build {
-        dependsOn(shadowJar)
-    }
-
-    create<ConfigureShadowRelocation>("relocateJars") {
-        target = shadowJar.get()
-        prefix = "${project.name}.lib"
+    processResources {
+        filteringCharset = Charsets.UTF_8.name()
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        filesMatching("plugin.yml") {
+            expand(Pair("version", project.version))
+        }
     }
 }
 
