@@ -85,11 +85,11 @@ public class XpBottleEvent implements Listener {
         for (Map.Entry<CookingRecipe<?>, Integer> entry : recipesUsed.entrySet()) {
             exp += entry.getKey().getExperience() * entry.getValue();
         }
-        furnace.clearRecipeUsed();
 
         Optional<ItemStack> optionalItemStack = getExpBottleItem(player, exp);
         if (optionalItemStack.isEmpty())
             return;
+        furnace.clearRecipeUsed();
 
         event.setCurrentItem(optionalItemStack.get());
         itemStack.subtract(1);
