@@ -38,7 +38,7 @@ tasks {
 }
 
 dependencies {
-    compileOnly("com.alttd:Galaxy-API:1.20.1-R0.1-SNAPSHOT") {
+    compileOnly("com.alttd:Galaxy-API:1.20.4-R0.1-SNAPSHOT") {
         isChanging = true
     }
 }
