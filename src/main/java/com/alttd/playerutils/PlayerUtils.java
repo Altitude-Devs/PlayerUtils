@@ -5,8 +5,10 @@ import com.alttd.playerutils.commands.playerutils_subcommands.RotateBlock;
 import com.alttd.playerutils.config.Config;
 import com.alttd.playerutils.config.Messages;
 import com.alttd.playerutils.event_listeners.RotateBlockEvent;
+import com.alttd.playerutils.event_listeners.TeleportEvent;
 import com.alttd.playerutils.event_listeners.XpBottleEvent;
 import com.alttd.playerutils.util.Logger;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class PlayerUtils extends JavaPlugin {
@@ -31,10 +33,12 @@ public final class PlayerUtils extends JavaPlugin {
     }
 
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new XpBottleEvent(this, logger), this);
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new XpBottleEvent(this, logger), this);
+        pluginManager.registerEvents(new TeleportEvent(), this);
 
         RotateBlockEvent rotateBlockEvent = new RotateBlockEvent();
-        getServer().getPluginManager().registerEvents(rotateBlockEvent, this);
+        pluginManager.registerEvents(rotateBlockEvent, this);
         playerUtilsCommand.addSubCommand(new RotateBlock(rotateBlockEvent));
     }
 
