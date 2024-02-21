@@ -1,6 +1,5 @@
 package com.alttd.playerutils.event_listeners;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,13 +14,11 @@ public class TeleportEvent implements Listener {
      * @param event the PlayerTeleportEvent being triggered
      */
     @EventHandler()
-    public void modifyTeleportForMountedPlayers(PlayerTeleportEvent event) {
+    public void preventTeleportForMountedPlayers(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
         if (player.getVehicle() == null)
             return;
-        player.getVehicle().removePassenger(player);
-        Location eventTo = event.getTo();
-        eventTo.setY(eventTo.getBlockY() + 1);
-        event.setTo(eventTo);
+        event.setCancelled(true);
+        player.sendRichMessage("<red>Teleporting was cancelled. You can not be sitting, or mounted while teleporting.");
     }
 }
