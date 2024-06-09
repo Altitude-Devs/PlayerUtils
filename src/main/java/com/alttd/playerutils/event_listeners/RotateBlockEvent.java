@@ -9,6 +9,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.Fence;
 import org.bukkit.block.data.type.Stairs;
+import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.block.data.type.Wall;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -69,6 +70,9 @@ public class RotateBlockEvent implements Listener {
         } else if(Tag.RAILS.isTagged(type)) {
             event.setCancelled(true);
             toggleRails(block, player);
+        } else if (type.equals(Material.IRON_TRAPDOOR) && event.getAction().isLeftClick()){
+            event.setCancelled(true);
+            toggleTrapDoor(block, player);
         } else if (block.getBlockData() instanceof Directional directional) {
             event.setCancelled(true);
             rotateDirectionalBlock(block, directional, player);
@@ -76,6 +80,18 @@ public class RotateBlockEvent implements Listener {
             event.setCancelled(true);
             rotateOrientableBlock(block, orientable, player);
         }
+    }
+
+    private void toggleTrapDoor(Block block, Player player) {
+        if (!(block instanceof TrapDoor trapDoor)) {
+            return;
+        }
+
+        if (cannotBuild(block, player)) {
+            return;
+        }
+
+        trapDoor.setOpen(!trapDoor.isOpen());
     }
 
     private void toggleRails(Block block, Player player) {
