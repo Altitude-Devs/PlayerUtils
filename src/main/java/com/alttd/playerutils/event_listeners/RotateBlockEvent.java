@@ -7,10 +7,7 @@ import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
-import org.bukkit.block.data.type.Fence;
-import org.bukkit.block.data.type.Stairs;
-import org.bukkit.block.data.type.TrapDoor;
-import org.bukkit.block.data.type.Wall;
+import org.bukkit.block.data.type.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -70,9 +67,12 @@ public class RotateBlockEvent implements Listener {
         } else if(Tag.RAILS.isTagged(type)) {
             event.setCancelled(true);
             toggleRails(block, player);
-        } else if (type.equals(Material.IRON_TRAPDOOR) && event.getAction().isLeftClick()){
+        } else if (type.equals(Material.IRON_TRAPDOOR) && event.getAction().isLeftClick()) {
             event.setCancelled(true);
             toggleTrapDoor(block, player);
+        } else if (Tag.BIG_DRIPLEAF_PLACEABLE.isTagged(type) && event.getAction().isLeftClick()) {
+            event.setCancelled(true);
+            toggleDripLeaf(block, player);
         } else if (block.getBlockData() instanceof Directional directional) {
             event.setCancelled(true);
             rotateDirectionalBlock(block, directional, player);
@@ -80,6 +80,28 @@ public class RotateBlockEvent implements Listener {
             event.setCancelled(true);
             rotateOrientableBlock(block, orientable, player);
         }
+    }
+
+    private void toggleDripLeaf(Block block, Player player) {
+        if (!(block instanceof BigDripleaf bigDripleaf)) {
+            return;
+        }
+
+        if (cannotBuild(block, player)) {
+            return;
+        }
+
+        BigDripleaf.Tilt[] values = BigDripleaf.Tilt.values();
+
+        int ordinal = bigDripleaf.getTilt().ordinal();
+        if (ordinal == values.length) {
+            ordinal = 0;
+        } else {
+            ordinal++;
+        }
+
+        bigDripleaf.setTilt(values[ordinal]);
+        block.setBlockAndForget(bigDripleaf);
     }
 
     private void toggleTrapDoor(Block block, Player player) {
