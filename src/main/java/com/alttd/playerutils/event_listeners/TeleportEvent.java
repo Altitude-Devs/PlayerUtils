@@ -18,6 +18,8 @@ public class TeleportEvent implements Listener {
         Player player = event.getPlayer();
         if (player.getVehicle() == null)
             return;
+        if (event.getTo().distance(event.getFrom()) < 5)
+            return;
         event.setCancelled(true);
         player.sendRichMessage("<red>Teleporting was cancelled. You can not be sitting, or mounted while teleporting.");
     }
