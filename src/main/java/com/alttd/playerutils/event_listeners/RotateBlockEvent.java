@@ -55,7 +55,13 @@ public class RotateBlockEvent implements Listener {
             return;
 
         Material type = block.getType();
-        if (Tag.STAIRS.isTagged(type)) {
+        if (type.equals(Material.IRON_TRAPDOOR) && event.getAction().isLeftClick()) {
+            event.setCancelled(true);
+            toggleTrapDoor(block, player);
+        } else if (Tag.BIG_DRIPLEAF_PLACEABLE.isTagged(type) && event.getAction().isLeftClick()) {
+            event.setCancelled(true);
+            toggleDripLeaf(block, player);
+        } else if (Tag.STAIRS.isTagged(type)) {
             event.setCancelled(true);
             rotateStairs(block, player);
         } else if (Tag.WALLS.isTagged(type)) {
@@ -67,12 +73,6 @@ public class RotateBlockEvent implements Listener {
         } else if(Tag.RAILS.isTagged(type)) {
             event.setCancelled(true);
             toggleRails(block, player);
-        } else if (type.equals(Material.IRON_TRAPDOOR) && event.getAction().isLeftClick()) {
-            event.setCancelled(true);
-            toggleTrapDoor(block, player);
-        } else if (Tag.BIG_DRIPLEAF_PLACEABLE.isTagged(type) && event.getAction().isLeftClick()) {
-            event.setCancelled(true);
-            toggleDripLeaf(block, player);
         } else if (block.getBlockData() instanceof Directional directional) {
             event.setCancelled(true);
             rotateDirectionalBlock(block, directional, player);

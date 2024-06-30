@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("maven-publish")
+    id("com.gorylenko.gradle-git-properties") version "2.3.1"
 }
 
 group = "com.alttd"
@@ -13,6 +14,10 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
     }
+}
+
+gitProperties {
+    keys = listOf("git.commit.id", "git.commit.time")
 }
 
 tasks {

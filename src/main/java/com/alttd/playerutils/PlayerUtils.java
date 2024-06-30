@@ -11,6 +11,10 @@ import com.alttd.playerutils.util.Logger;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 public final class PlayerUtils extends JavaPlugin {
 
     private Logger logger;
@@ -22,6 +26,20 @@ public final class PlayerUtils extends JavaPlugin {
         registerCommands();
         registerEvents();
         reloadConfigs();
+        printVersion();
+    }
+
+    private void printVersion() {
+        Properties gitProps = new Properties();
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("git.properties")) {
+            gitProps.load(inputStream);
+        } catch (IOException e) {
+            logger.severe("Unable to load git.properties, unknown version");
+            return;
+        }
+
+        logger.info("Git commit ID: %s".formatted(gitProps.getProperty("git.commit.id")));
+        logger.info("Git commit time: %s".formatted(gitProps.getProperty("git.commit.time")));
     }
 
     @Override
