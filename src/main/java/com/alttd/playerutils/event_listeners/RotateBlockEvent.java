@@ -94,10 +94,8 @@ public class RotateBlockEvent implements Listener {
         BigDripleaf.Tilt[] values = BigDripleaf.Tilt.values();
 
         int ordinal = bigDripleaf.getTilt().ordinal();
-        if (ordinal == values.length) {
+        if (++ordinal == values.length) {
             ordinal = 0;
-        } else {
-            ordinal++;
         }
 
         bigDripleaf.setTilt(values[ordinal]);
