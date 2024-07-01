@@ -1,5 +1,6 @@
 package com.alttd.playerutils.event_listeners;
 
+import com.alttd.playerutils.util.Logger;
 import org.bukkit.Axis;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,14 +17,21 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class RotateBlockEvent implements Listener {
 
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(RotateBlockEvent.class);
     private final HashSet<UUID> rotateEnabled = new HashSet<>();
+    private final Logger logger;
     private static final List<BlockFace> VALID_FOUR_STATES = List.of(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST);
+
+    public RotateBlockEvent(Logger logger) {
+        this.logger = logger;
+    }
 
 
     public synchronized boolean toggleRotate(UUID uuid) {
@@ -55,11 +63,14 @@ public class RotateBlockEvent implements Listener {
             return;
 
         Material type = block.getType();
+        logger.debug(String.format("Material %s with action %s", type, event.getAction().isLeftClick() ? "left click" : "right click"));
         if (type.equals(Material.IRON_TRAPDOOR) && event.getAction().isLeftClick()) {
             event.setCancelled(true);
+            logger.debug("Toggling trap door");
             toggleTrapDoor(block, player);
         } else if (Tag.BIG_DRIPLEAF_PLACEABLE.isTagged(type) && event.getAction().isLeftClick()) {
             event.setCancelled(true);
+            logger.debug("Toggling drip leaf");
             toggleDripLeaf(block, player);
         } else if (Tag.STAIRS.isTagged(type)) {
             event.setCancelled(true);
@@ -94,24 +105,31 @@ public class RotateBlockEvent implements Listener {
         BigDripleaf.Tilt[] values = BigDripleaf.Tilt.values();
 
         int ordinal = bigDripleaf.getTilt().ordinal();
+        logger.debug("drip leaf is on tilt %d".formatted(ordinal));
         if (++ordinal == values.length) {
             ordinal = 0;
         }
 
         bigDripleaf.setTilt(values[ordinal]);
+        logger.debug("drip leaf set to tilt %d".formatted(ordinal));
         block.setBlockAndForget(bigDripleaf);
+        logger.debug("drip leaf set");
     }
 
     private void toggleTrapDoor(Block block, Player player) {
         if (!(block instanceof TrapDoor trapDoor)) {
+            logger.debug("Trap door early return 1");
             return;
         }
 
         if (cannotBuild(block, player)) {
+            logger.debug("Trap door early return 2");
             return;
         }
 
+        logger.debug("Trap door is %s".formatted(trapDoor.isOpen() ? "open" : "closed"));
         trapDoor.setOpen(!trapDoor.isOpen());
+        logger.debug(String.format("Trap door set to %s", trapDoor.isOpen() ? "open" : "close"));
     }
 
     private void toggleRails(Block block, Player player) {

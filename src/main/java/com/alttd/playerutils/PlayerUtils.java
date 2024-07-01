@@ -55,7 +55,7 @@ public final class PlayerUtils extends JavaPlugin {
         pluginManager.registerEvents(new XpBottleEvent(this, logger), this);
         pluginManager.registerEvents(new TeleportEvent(), this);
 
-        RotateBlockEvent rotateBlockEvent = new RotateBlockEvent();
+        RotateBlockEvent rotateBlockEvent = new RotateBlockEvent(logger);
         pluginManager.registerEvents(rotateBlockEvent, this);
         playerUtilsCommand.addSubCommand(new RotateBlock(rotateBlockEvent));
     }
