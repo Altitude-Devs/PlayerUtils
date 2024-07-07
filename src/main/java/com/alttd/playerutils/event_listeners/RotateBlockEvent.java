@@ -1,5 +1,6 @@
 package com.alttd.playerutils.event_listeners;
 
+import com.alttd.playerutils.util.Logger;
 import org.bukkit.Axis;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,7 +24,12 @@ import java.util.stream.Collectors;
 public class RotateBlockEvent implements Listener {
 
     private final HashSet<UUID> rotateEnabled = new HashSet<>();
+    private final Logger logger;
     private static final List<BlockFace> VALID_FOUR_STATES = List.of(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST);
+
+    public RotateBlockEvent(Logger logger) {
+        this.logger = logger;
+    }
 
 
     public synchronized boolean toggleRotate(UUID uuid) {
@@ -55,10 +61,11 @@ public class RotateBlockEvent implements Listener {
             return;
 
         Material type = block.getType();
+        logger.debug(String.format("Material %s with action %s", type, event.getAction().isLeftClick() ? "left click" : "right click"));
         if (type.equals(Material.IRON_TRAPDOOR) && event.getAction().isLeftClick()) {
             event.setCancelled(true);
             toggleTrapDoor(block, player);
-        } else if (Tag.BIG_DRIPLEAF_PLACEABLE.isTagged(type) && event.getAction().isLeftClick()) {
+        } else if (type.equals(Material.BIG_DRIPLEAF) && event.getAction().isLeftClick()) {
             event.setCancelled(true);
             toggleDripLeaf(block, player);
         } else if (Tag.STAIRS.isTagged(type)) {
@@ -83,7 +90,7 @@ public class RotateBlockEvent implements Listener {
     }
 
     private void toggleDripLeaf(Block block, Player player) {
-        if (!(block instanceof BigDripleaf bigDripleaf)) {
+        if (!(block.getBlockData() instanceof BigDripleaf bigDripleaf)) {
             return;
         }
 
@@ -103,7 +110,7 @@ public class RotateBlockEvent implements Listener {
     }
 
     private void toggleTrapDoor(Block block, Player player) {
-        if (!(block instanceof TrapDoor trapDoor)) {
+        if (!(block.getBlockData() instanceof TrapDoor trapDoor)) {
             return;
         }
 
@@ -112,6 +119,7 @@ public class RotateBlockEvent implements Listener {
         }
 
         trapDoor.setOpen(!trapDoor.isOpen());
+        block.setBlockAndForget(trapDoor);
     }
 
     private void toggleRails(Block block, Player player) {
